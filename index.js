@@ -9,7 +9,7 @@ var controller = Botkit.slackbot({
 //xoxb-135761155234-yKQdQPgRU3zW6kQJporR4dZf
 // connect the bot to a stream of messages
 controller.spawn({
-  token: "xoxb-135761155234-yKQdQPgRU3zW6kQJporR4dZf",
+  token: "xoxb-135761155234-JU4VzABUsi2cfaGfXkJmL1Bu",
 }).startRTM()
 
 /*
@@ -75,128 +75,88 @@ controller.hears(['hello', 'hi', 'hola'],['direct_message','direct_mention','men
 
 	typeConversation = function(response, conversation){
 		bot.startConversation(message, function(error, conversation){
-		conversation.ask('Buscas '+action+' un `departamento` o `casa`', [
-		  	{
-		  		pattern: 'departamento',
-		  		callback: function(response, conversation){
-		  			conversation.next();
-		  		}
-		  	},
-		  	{
-		  		pattern: 'casa',
-		  		callback: function(response, conversation){
-		  			conversation.next();
-		  		}
-		  	},
-		  	{
-		  		default: true,
-		  		callback: function(response, conversation){
-		  			conversation.repeat();
-		  			conversation.next();
-		  		}
-		  	}
-	  	], {'key': 'inmueble'});
+			conversation.ask('Buscas '+action+' un `departamento` o `casa`', [
+			  	{
+			  		pattern: 'departamento',
+			  		callback: function(response, conversation){
+			  			conversation.next();
+			  		}
+			  	},
+			  	{
+			  		pattern: 'casa',
+			  		callback: function(response, conversation){
+			  			conversation.next();
+			  		}
+			  	},
+			  	{
+			  		default: true,
+			  		callback: function(response, conversation){
+			  			conversation.repeat();
+			  			conversation.next();
+			  		}
+			  	}
+		  	], {'key': 'inmueble'});
 
-	  	conversation.on('end', function(conversation){
+		  	conversation.on('end', function(conversation){
 
-	  		if(conversation.status == 'completed'){
-	  			action = conversation.extractResponse('inmueble');
+		  		if(conversation.status == 'completed'){
+		  			inmueble = conversation.extractResponse('inmueble');
 
-	  			bot.reply(message, 'inmueble '+action);
+		  			confirmationConversation(message, conversation);
 
-	  		
+		  		}else{
+		  			bot.reply(message, 'OK, bye!');
+	  			}
+	  		});
 
+		});
+	}
 
-	  		}else{
-	  			bot.reply(message, 'OK, bye!');
-  			}
-  		});
+	confirmationConversation = function(response, conversation){
 
-	});
+		var conector = 'un';
+
+		if(inmueble == 'casa'){
+		  	conector = 'una';
+		}
+
+		bot.startConversation(message, function(error, conversation){
+			conversation.ask("¿Desea `"+action+"` "+conector+" `"+inmueble+"`?", [
+			  	{
+			  		pattern: 'si',
+			  		callback: function(response, conversation){
+			  			conversation.next();
+			  		}
+			  	},
+			  	{
+			  		pattern: 'no',
+			  		callback: function(response, conversation){
+			  			bot.reply(message, 'OK, bye!');
+			  			conversation.next();
+			  		}
+			  	},
+			  	{
+			  		default: true,
+			  		callback: function(response, conversation){
+			  			bot.reply(message, 'OK, bye!');
+			  		}
+			  	}
+		  	], {'key': 'sino'});
+
+		  	conversation.on('end', function(conversation){
+
+		  		if(conversation.status == 'completed'){
+		  			bot.reply(message, 'Estamos buscando su mejor lugar para vivir...');
+
+		  		}else{
+		  			bot.reply(message, 'OK, bye!');
+	  			}
+	  		});
+
+		});
 	}
 
 	
-
-	
-	/*
-	conversation.ask('Buscas '+action+' un `departamento` o `casa`', [
-				  	{
-				  		pattern: 'departamentor',
-				  		callback: function(response, conversation){
-				  			conversation.next();
-				  		}
-				  	},
-				  	{
-				  		pattern: 'casa',
-				  		callback: function(response, conversation){
-				  			conversation.next();
-				  		}
-				  	},
-				  	{
-				  		default: true,
-				  		callback: function(response, conversation){
-				  			conversation.repeat();
-				  			conversation.next();
-				  		}
-				  	}
-			  	], {'key': 'inmueble'});
-
-			  		conversation.on('end', function(conversation){
-
-				  		if(conversation.status == 'completed'){
-				  			const type = conversation.extractResponse('inmueble');
-				  			bot.reply(message, 'Buscas '+action+" un(a) "+type);
-
-				  		}else{
-				  			bot.reply(message, 'OK, bye!');
-				  		}
-				  	});
-	*/
-
-/*
-  bot.startConversation(message, function(error, conversation){
-  	conversation.ask('Hola', function(response, conversation) {
-	  	conversation.ask('¿Desea `comprar` o `alquilar` un inmueble?', [
-		  	{
-		  		pattern: 'comprar',
-		  		callback: function(response, conversation){
-		  			conversation.next();
-		  		}
-		  	},
-		  	{
-		  		pattern: 'alquilar',
-		  		callback: function(response, conversation){
-		  			conversation.next();
-		  		}
-		  	},
-		  	{
-		  		default: true,
-		  		callback: function(response, conversation){
-		  			conversation.repeat();
-		  			conversation.next();
-		  		}
-		  	}
-	  	]);
-
-	  	conversation.next();
-
-	  }, {'key': 'action'});
-
-  		conversation.on('end', function(conversation){
-  			if(conversation.status == 'completed'){
-  				const action = conversation.extractResponse('action');
-
-  				bot.reply(message, 'Buscas '+action+' un inmueble');
-
-  			}else{
-  				bot.reply(message, 'OK, bye!');
-  			}
-  		});
-
-
-
-	});
-	*/
 
 });
 
