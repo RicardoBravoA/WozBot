@@ -9,7 +9,7 @@ var controller = Botkit.slackbot({
 //xoxb-135761155234-yKQdQPgRU3zW6kQJporR4dZf
 // connect the bot to a stream of messages
 controller.spawn({
-  token: "xoxb-135761155234-JU4VzABUsi2cfaGfXkJmL1Bu",
+  token: "xoxb-135761155234-yKQdQPgRU3zW6kQJporR4dZf",
 }).startRTM()
 
 /*
